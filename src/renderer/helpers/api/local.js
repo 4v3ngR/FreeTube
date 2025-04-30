@@ -303,6 +303,19 @@ export async function getLocalVideoInfo(id) {
     }
   }
 
+  try {
+    const urlObj = new URL(info.streaming_data.server_abr_streaming_url);
+    urlObj.pathname = 'generate_204';
+    urlObj.search = '';
+    urlObj.hash = '';
+
+    await new Promise(r => setTimeout(r, 1000));
+    await fetch(urlObj);
+    await new Promise(r => setTimeout(r, 1000));
+    urlObj.search='?conn2';
+    await fetch(urlObj);
+  } catch {}
+
   return info
 }
 
