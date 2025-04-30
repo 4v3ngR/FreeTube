@@ -2561,7 +2561,17 @@ export default defineComponent({
           handleError(error, 'loading dash/audio manifest and setting default quality in mounted')
         }
       } else {
-        await setLegacyQuality(props.startTime)
+        let retries = 10;
+        while (retries--) {
+          try {
+            const format = props.legacyFormats[0];
+            await player.load(format.url, props.startTime, format.mimeType)
+            break;
+          } catch (ex) {
+            if (retries === 1) throw new Exception(ex.message);
+          }
+          await new Promise(r => setTimeout(r, 4000));
+        }
       }
     }
 
